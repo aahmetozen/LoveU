@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I love you my wife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #050505;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #ui {
+            position: relative;
+            transform: scale(1.2); 
+        }
+
+        /* Artık CSS animasyonu yok, sadece pozisyon tutucu */
+        .love_wrapper {
+            position: absolute;
+        }
+
+        .love_word {
+            color: #ea80b0;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transform: translateY(-100%) rotateZ(-30deg);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            white-space: nowrap;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui"></div>
+
+    <script>
+        // Developed by Goopinator
+        const ui = document.getElementById('ui');
+        const totalElements = 150; 
+        const scale = 14; 
+        const elements = []; // DOM elemanlarını her karede güncellemek için bir dizide tutuyoruz
+
+        // 1. AŞAMA: Bütün kelimeleri oluşturup DOM'a ekliyoruz
+        for (let i = 0; i < totalElements; i++) {
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.className = 'love_wrapper';
+
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'love_word';
+            wordDiv.innerText = 'I love you';
+
+            wrapperDiv.appendChild(wordDiv);
+            ui.appendChild(wrapperDiv);
+
+            // Daha sonra pozisyonlarını değiştirmek için listeye kaydediyoruz
+            elements.push({ element: wrapperDiv, index: i });
+        }
+
+        let time = 0;
+
+        // 2. AŞAMA: JavaScript ile sonsuz dönüş animasyonu
+        function animateLoop() {
+            // Hız ve yön kontrolü. Eksi değer vererek saat yönünde akmasını sağlıyoruz.
+            // Sayıyı 0.005'ten 0.01'e çıkarırsan dönüş hızlanır.
+            time -= 0.005; 
+
+            elements.forEach((item) => {
+                // Her kelimenin kendi sırasına (index) göre başlangıç açısını bulup, 
+                // üzerine zamanı ekleyerek yörüngede ilerletiyoruz.
+                const t = (item.index / totalElements) * Math.PI * 2 + time;
+                
+                // Kalp formu denklemi
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)); 
+                
+                // Yeni koordinatları uygula
+                item.element.style.left = `${x * scale}px`;
+                item.element.style.top = `${y * scale}px`;
+            });
+
+            // Akıcılık için tarayıcının ekran yenileme hızına (genelde 60fps) senkronize oluyoruz
+            requestAnimationFrame(animateLoop);
+        }
+
+        // Animasyonu başlat
+        animateLoop();
+    </script>
+
+</body>
+</html>
